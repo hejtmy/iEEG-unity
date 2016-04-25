@@ -38,12 +38,11 @@ OpenExperimentLog = function(filepath){
   ls$Experiment = GetTextBetween(text,"EXPERIMENT INFO")
   return(ls)     
 }
-OpenPlayerLog = function(directory,overrride = F){
+OpenPlayerLog = function(directory, override = F){
   ptr = "_player_"
   logs = list.files(directory, pattern = ptr, full.names = T)
-  if(length(logs) != 1){
-    if(length(logs) < 1) SmartPrint(c("Could not find the file for player log at ", filepath))
-    if(length(logs) > 1)SmartPrint(c("Could not find the file for player log at ", filepath))
+  if(length(logs) < 1){
+    SmartPrint(c("Could not find the file for player log in ", directory))
     return(NULL)
   }
   log_columns_types = c(Time="numeric",Position="numeric",Rotation.X="numeric",Rotation.Y="numeric", FPS = "numeric", Input="character")
@@ -51,10 +50,9 @@ OpenPlayerLog = function(directory,overrride = F){
   if (length(logs)>1){
     #check if there is a preprocessed player file
     preprocessed_index = grep("*_preprocessed",logs)
-    if(length(preprocessed_index) >0){
+    if(length(preprocessed_index) > 0){
       if(override){
         SmartPrint(c("Removing preprocessed log", ptr))
-        log = logs[1]
         file.remove(logs[preprocessed_index])
       } else {
         SmartPrint(c("Loading preprocessed player log", ptr))
@@ -66,6 +64,10 @@ OpenPlayerLog = function(directory,overrride = F){
       return(NULL)
     }
   } else {
+    if(length(logs) > 1){
+      SmartPrint(c("Multiple player logs in ", directory))
+      return(NULL)
+    } 
     log = logs[1]
   }
   SmartPrint(c("Loading unprocessed player log", ptr))

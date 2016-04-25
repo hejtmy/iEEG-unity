@@ -36,7 +36,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       
       if(is.null(experimentLog)) stop("Experiment log not found")
       #if multiple logs, quit
-      self$playerLog = OpenPlayerLog(self$sessionDirectory, overrride = override)
+      self$playerLog = OpenPlayerLog(self$sessionDirectory, override = override)
       
       if(is.null(self$playerLog)) stop("Player log not found")
       #preprocesses player log
