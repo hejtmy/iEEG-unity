@@ -4,6 +4,7 @@ BaseAnalysis <- R6Class("BaseAnalysis",
   #basic definitions
   participant = NULL,
   dataDirectory = NULL,
+  tasks = NULL,
   initialize = function(dir, id){
     private$dataDirectory(dir,id)
     self$SetParticipant(id)
