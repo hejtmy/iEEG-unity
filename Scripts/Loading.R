@@ -7,10 +7,11 @@ library('stringr')
 library('png')
 library('grid')
 library('ggplot2')
+library('jsonlite')
 
 #custom items
 
-source(paste(getwd(),"Scripts/HelperFunctions/helperFunctions.R",sep="/"))
+source(paste(getwd(),"Scripts/Helpers/helperFunctions.R",sep="/"))
 source_folder(paste(getwd(),"Scripts/Helpers/",sep="/"))
 source_folder(paste(getwd(),"Scripts/Analysis/",sep="/"))
 source_folder(paste(getwd(),"Scripts/Classes/",sep="/"))

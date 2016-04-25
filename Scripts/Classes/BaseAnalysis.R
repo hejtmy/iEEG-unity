@@ -3,29 +3,29 @@ BaseAnalysis <- R6Class("BaseAnalysis",
   public = list(
   #basic definitions
   participant = NULL,
+  dataDirectory = NULL,
   initialize = function(dir, id){
-    self$dir = dir
+    private$dataDirectory(dir,id)
     self$SetParticipant(id)
-    self$SetSession(session)
     #TODO - check the data
-    if(nargs() >= 3) {
+    if(nargs() >= 2) {
      self$ReadData()
     }
-  },
-  #define what is valid in the current context
-  SetSession = function(number=1){
-   self$session = paste("Session",number,sep="")
   },
   SetParticipant = function(string){
     self$participant = string
   },
   ReadData = function(){
-    readData()
+    private$readData()
   }
   ),
   private = list(
-    setDataDirectory = function(){
-     self$data_directory <- paste(self$dir,self$id,"VR",self$session,sep="/")
+    rootDataDirectory = NULL,
+    setDataDirectory = function(directory = private$rootDataDirectory, id = self$participant){
+      if (is.null(directory)) stop("no directory set")
+      private$rootDataDirectory = directory
+      self$dataDirectory = paste(directory,id,sep="/")
+      return(self$dataDirectory)
     },
     readData = function(){
       

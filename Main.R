@@ -1,7 +1,8 @@
 #give me folder
+source("Scripts/Loading.R")
 
-dataDirectory = "../Data/"
+dataDirectory = "../Data"
 
 Analysis = UnityAnalysis$new(participant, sessionId)
 
-Analysis = UnityAnalysis$new("23",1)
+Analysis = UnityAnalysis$new(dataDirectory, "23", 1)
