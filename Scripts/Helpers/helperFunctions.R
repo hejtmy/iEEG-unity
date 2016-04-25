@@ -19,3 +19,7 @@ ColumnPresent = function(names,name){
 SmartPrint = function(characters){
   print(paste(characters, sep="", collapse = " "))
 }
+
+Present = function(){
+  return(TRUE)
+}
