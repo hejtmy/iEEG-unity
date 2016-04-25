@@ -1,6 +1,6 @@
 GetTrialTimewindow = function(test, trialID){
   #correction for c# indexing
-  trialID = trialID -1
+  trialID = trialID - 1
   
   ls = list()
   ls$WaitingToStart = (filter(test$data, Index == trialID & Sender == "Trial" & Event == "WaitingToStart") %>% select(Time))[[1]]
