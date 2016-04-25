@@ -1,7 +1,7 @@
 CreateSeparator = function(string){
   ls = list()
   ls$beginning = paste("\\*\\*\\*\\",string,"\\*\\*\\*", sep="")
-  ls$end = paste("\\-\\-\\-\\",string,"\\-\\-\\-", sep="")
+  ls$end = paste("\\-\\-\\-",string,"\\-\\-\\-", sep="")
   return(ls)
 }
 GetIndexesBetween=function(text,string){
@@ -10,11 +10,20 @@ GetIndexesBetween=function(text,string){
   ls$end = which(grepl(CreateSeparator(string)$end,text))
   return(ls)
 }
-GetTextBetween = function(text, string){
+GetTextBetween=function(text, string){
   indexes = GetIndexesBetween(text, string)
-  if (length(indexes$beginning) != 1 || length(indexes$end) !=1) return(NULL)
+  if (length(indexes$beginning) != 1 || length(indexes$end) !=1) return (NULL)
   text = text[(indexes$beginning+1):(indexes$end-1)]
-  return(fromJSON(text))
+  return(text)
+}
+GetJsonBetween = function(text, string){
+  ls = TextToJSON(GetTextBetween(text,string))
+  return(ls)
+}
+TextToJSON = function(text){
+  #JSON checking
+  ls = fromJSON(text)
+  return(ls)
 }
 OpenExperimentLogs = function(directory = ""){
   ls = list()
@@ -34,8 +43,8 @@ OpenExperimentLog = function(filepath){
   ls = list()
   #reads into a text file at first
   text = readLines(filepath,warn=F)
-  ls$header = GetTextBetween(text,"SESSION HEADER")
-  ls$Experiment = GetTextBetween(text,"EXPERIMENT INFO")
+  ls$header = GetJsonBetween(text,"SESSION HEADER")
+  ls$Experiment = GetJsonBetween(text,"EXPERIMENT INFO")
   return(ls)     
 }
 OpenPlayerLog = function(directory, override = F){
@@ -93,145 +102,31 @@ SavePreprocessedPlayer = function(directory, pos_tab){
   SmartPrint(c("Saving processed player log as", preprocessed_filename))
   write.table(pos_tab, preprocessed_filename, sep=";", dec=".", quote=F, row.names = F)
 }
-OpenScenarioLog = function(experiment_log){
-  if(is.null(experiment_log$scenario$Name)) return (NULL)
-  directory = dirname(experiment_log$filename)
-  ptr <- paste("_", escapeRegex(experiment_log$scenario$Name), "_", experiment_log$scenario$Timestamp, "*.txt$", sep="")
-  #needs to check if we got only one file out
-  log = list.files(directory, pattern = ptr, full.names = T)[1]
-  #if the file does not exists returning NULL and exiting
-  if(!file.exists(log)){
-    print(paste("Could not find the file for scenario log", ptr, sep = " "))
-    print(ptr)
-    return(NULL)
-  }
-  scenario_log = OpenQuestLog(log)
-  return(scenario_log)
-}
-OpenQuestLogs = function(experiment_log, scenario_log = NULL){
-  if (is.null(scenario_log)) return (NULL)
-  directory = dirname(experiment_log$filename)
-  #prepares list
+OpenTestLogs = function(directory){
   ls = list()
-  #list of activated logs from the scenario process
-  #it looks for steps finished because for some weird reason of bad logging
-  table_steps_activated <- scenario_log$data[scenario_log$data$Action=="StepActivated",]
-  table_steps_finished <- scenario_log$data[scenario_log$data$Action=="StepFinished",]
-  if (nrow(table_steps_activated) >= nrow(table_steps_finished)) use_finished = F else use_finished = T
-  for_interations = if (use_finished) nrow(table_steps_finished) else nrow(table_steps_activated) 
-  for(i in 1:for_interations){
-    if (use_finished){
-      step = table_steps_finished[i,]
-      timestamp = ""
-      #name of the step that activated the quest
-      finished_step_name = scenario_log$steps[scenario_log$steps$ID == step$StepID,"Name"]
-      #get the name of the quest activated from the name of the atctivation step
-      quest_name <- GetActivatedQuestName(finished_step_name)
-    } else {
-      step = table_steps_activated[i,]
-      timestamp = step$Timestamp
-      #name of the step that activated the quest
-      activated_step_name = scenario_log$steps[scenario_log$steps$ID == step$StepID,"Name"]
-      #get the name of the quest activated from the name of the atctivation step
-      quest_name <- GetActivatedQuestName(activated_step_name)
-    }
-    if(is.na(quest_name)) next
-    if (!is.null(quest_name) ){
-      ptr <- paste("_", escapeRegex(quest_name), "_", timestamp, sep="")
-      #needs to check if we got only one file out
-      log = list.files(directory, pattern = ptr, full.names = T)[1]
-      if(!file.exists(log)){
-        print(paste("Could not find the file for given quest log", ptr, sep = " "))
-        print(ptr)
-        next
-      }
-      #might change this 
-      ls[[quest_name]] = OpenQuestLog(log)
-    }
+  logs = list.files(directory, pattern = "_test_", full.names = T)
+  if(length(logs)<1){
+    SmartPrint(c("Could not find any test logs in ", directory))
+    next
+  }
+  for(i in 1: length(logs)){
+    log = logs[i]
+    ls[[i]] = OpenTestLog(log)
   }
   return(ls)
 }
-OpenQuestLog = function(filepath){
+OpenTestLog = function(filepath){
   ls = list()
   #reads into a text file at first
-  text = readLines(filepath,warn=F)
-  #finds the header start
-  idxHeaderTop <- which(grepl('\\*\\*\\*\\*\\*',text))
-  #finds the header bottom
-  idxHeaderBottom <- which(grepl('\\-\\-\\-\\-\\-',text))
-  #potentially returns the header as well in a list
-  ls[["header"]] <- into_list(text[(idxHeaderTop+1):(idxHeaderBottom-1)])
-  #todo - reads the header 
-  idxStepTop <- which(grepl('\\*\\*\\*Quest step data\\*\\*\\*',text))
-  idxStepBottom <- which(grepl('\\-\\-\\-Quest step data\\-\\-\\-',text))
-  #puts everyting from the quest header to the steps list
-  file = textConnection(text[(idxStepTop+1):(idxStepBottom-1)])
-  ls[["steps"]]  <- read.table(file,header=T,sep=";",stringsAsFactors=F)
-  close(file)
-  #and the timestamps and other the the data list
-  ls[["data"]] <- read.table(filepath, header=T, sep=";",dec=".", skip=idxStepBottom, stringsAsFactors=F)
-  return(ls)
-}
-#helper function to figure out the name of the activated quest as is saved in the steps
-#list in the scenario quest
-GetActivatedQuestName <- function(string =""){
-  #The name of the quest is between square brackets - [quest name]
-  name <- str_extract_all(string,"\\[(.*?)\\]")[[1]][1]
-  #removing the square brackets
-  name <- substring(name,2,nchar(name)-1)
-  return(name)
-}
-MakeQuestTable = function(trial_sets){
-  dt = data.table(id = numeric(0), session_id = numeric(0), name = character(0), type=character(0), id_of_set = numeric(0), set_id = numeric(0))
-  #to keep track of the number of quests
-  session_id = 1
-  for (n in 1:length(trial_sets)){
-    quest_logs = trial_sets[[n]]$quest_logs
-    num_rows = length(quest_logs)
-    dt_trial = data.table(id = numeric(num_rows), session_id = numeric(num_rows), name = character(num_rows), type=character(num_rows), id_of_set = numeric(num_rows),set_id = numeric(num_rows))
-    #if we pass an empty list
-    if (length(quest_logs) == 0) next
-    for(i in 1:length(quest_logs)){
-      #needs to pass the whole thing
-      quest_info = GetQuestInfo(quest_logs[i])
-      dt_trial[i,] = list(as.numeric(quest_info$id), session_id, quest_info$name, quest_info$type, n, i)
-      session_id = session_id + 1
-    }
-    dt = rbindlist(list(dt,dt_trial))
-  }
-  return(dt)
-}
-GetQuestInfo = function(quest_log){
-  ls = list()
-  ls[["name"]] = names(quest_log)
   
-  #gets all the letters and numbers until the dash(-) symbol
-  #first is E in VR experiments, second the quest index and then the a/b version
-  id_pattern = "(.*?)-"
-  id_part = str_match(ls[["name"]],id_pattern)[2]
-  if(is.na(id_part)) stop("not clear quest log naming")
-  #checks for MRI/Eyetracker
-  MRILog = if(is.na(str_match(id_part, "[AB]")[1])) FALSE else TRUE
-  if (MRILog){
-    #boreing complicated stuff because the naming of quests conventions don't make sense
-    ls$id = as.numeric(str_match(id_part, "[AB](\\d+)")[2])
-    if(!is.na(str_match(id_part, "[A]")[1])) ls[["id"]] = ls[["id"]]*2
-    if(!is.na(str_match(id_part, "[B]")[1])) ls[["id"]] = ls[["id"]]*2-1
-  } else {
-    ls$id = as.numeric(str_match(id_part, "[E](\\d+)")[2])
-  }
-  if(is.null(ls$id)) stop ("No appropriate id")
-  #getting type from the name of the log 
-  #MRI has B for trials with directions and A for trials
-  #Eyetracker has a for learning trials and "b" for trials
-  learn = c("a", "B")
-  trial = c("b", "A")
-  type_pattern = "[aAbB]"
-  if(is.na(str_match(id_part, type_pattern)[1])) stop("not clear quest log naming")
-  type_string = str_match(id_part, type_pattern)[1]
-  type = NA
-  if (type_string %in% learn) type = "learn"
-  if (type_string %in% trial) type = "trial"
-  ls[["type"]] = type
+  text = readLines(filepath,warn=F)
+  #needs to be before resaving text
+  bottomHeaderIndex = GetIndexesBetween(text, "TEST HEADER")$end
+  
+  text = GetTextBetween(text,"TEST HEADER")
+  ls$experimentSettings = GetJsonBetween(text, "EXPERIMENT SETTINGS")
+  ls$positionSettings = GetJsonBetween(text, "POSITIONS")
+
+  ls$quests  <- read.table(filepath, header=T, sep=";",stringsAsFactors=F,skip = bottomHeaderIndex)
   return(ls)
 }

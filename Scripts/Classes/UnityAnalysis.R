@@ -23,6 +23,9 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     }
   ),
   private = list(
+    isValid = function(){
+      return(TRUE)
+    },
     setSessionDirectory = function(){
       if(is.null(self$dataDirectory)) private$setDataDirectory()
       self$sessionDirectory = paste(self$dataDirectory,self$session,sep="/")
@@ -43,12 +46,11 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       #checks if there is everything we need and if not, recomputes the stuff
       changed = private$preprocessPlayerLog()
       if (changed & save) SavePreprocessedPlayer(self$sessionDirectory,self$playerLog)
-      stop()
-      questLogs = OpenQuestLogs()
-      for (i in length(questLogs)){
-        self$tasks[[i]] = questLogs[[i]]
+        
+      testLogs = OpenTestLogs(self$sessionDirectory)
+      for (i in length(testLogs)){
+        self$tests[[i]] = testLogs[[i]]
       }
-      self$questSet = MakeQuestTable(self$tasks)
      
       private$isValid()
       #checks if multiple sessions
