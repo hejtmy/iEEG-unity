@@ -1,6 +1,24 @@
+CreateSeparator = function(string){
+  ls = list()
+  ls$beginning = paste("\\*\\*\\*\\",string,"\\*\\*\\*", sep="")
+  ls$end = paste("\\-\\-\\-\\",string,"\\-\\-\\-", sep="")
+  return(ls)
+}
+GetIndexesBetween=function(text,string){
+  ls=list()
+  ls$beginning = which(grepl(CreateSeparator(string)$beginning,text))
+  ls$end = which(grepl(CreateSeparator(string)$end,text))
+  return(ls)
+}
+GetTextBetween = function(text, string){
+  indexes = GetIndexesBetween(text, string)
+  if (length(indexes$beginning) != 1 || length(indexes$end) !=1) return(NULL)
+  text = text[(indexes$beginning+1):(indexes$end-1)]
+  return(fromJSON(text))
+}
 OpenExperimentLogs = function(directory = ""){
   ls = list()
-  logs = list.files(directory, pattern = "_experiment_",full.names = T)
+  logs = list.files(directory, pattern = "_ExperimentInfo_",full.names = T)
   if(length(logs) < 1){
     print("Could not find the file for experiment log")
     return(NULL)
@@ -12,41 +30,24 @@ OpenExperimentLogs = function(directory = ""){
   if (length(ls) == 1) ls = ls[[1]]
   return(ls)
 }
-
 OpenExperimentLog = function(filepath){
   ls = list()
   #reads into a text file at first
   text = readLines(filepath,warn=F)
-  #finds the header start
-  idxHeaderTop <- which(grepl('\\*\\*\\*\\*\\*',text))
-  #finds the header bottom
-  idxHeaderBottom <- which(grepl('\\-\\-\\-\\-\\-',text))
-  #potentially returns the header as well in a list
-  ls[["header"]] <- into_list(text[(idxHeaderTop+1):(idxHeaderBottom-1)])
-  
-  #todo
-  idxTerrainTop <- which(grepl('\\*\\*\\*Terrain information\\*\\*\\*',text))
-  idxTerrainBottom <- which(grepl('\\-\\-\\-Terrain information\\-\\-\\-',text))
-  ls[["terrain"]]  <- into_list(text[(idxTerrainTop+1):(idxTerrainBottom-1)])
-  
-  #todo - so far it only reads one
-  idxSceneTop <- which(grepl('\\*\\*\\*Scenario information\\*\\*\\*',text))
-  idxSceneBottom <- which(grepl('\\-\\-\\-Scenario information\\-\\-\\-',text))
-  if (length(idxSceneTop) > 0 & length(idxSceneBottom) > 0){
-    ls[["scenario"]]  <- into_list(text[(idxSceneTop+1):(idxSceneBottom-1)])
-  }
+  ls$header = GetTextBetween(text,"SESSION HEADER")
+  ls$Experiment = GetTextBetween(text,"EXPERIMENT INFO")
   return(ls)     
 }
-OpenPlayerLog = function(experiment_log, override = F){
-  directory = dirname(experiment_log$filename)
-  ptr = paste(experiment_log$header$Patient, "_player_", experiment_log$header$Time, sep="", collapse="")
+OpenPlayerLog = function(directory,overrride = F){
+  ptr = "_player_"
   logs = list.files(directory, pattern = ptr, full.names = T)
-  log_columns_types = c(Time="numeric",Position="numeric",Rotation.X="numeric",Rotation.Y="numeric", Focus = "character", FPS = "numeric", Input="character")
-  preprocessed_log_column_types = c(log_columns_types, Position.x="numeric", Position.y="numeric", Position.z="numeric",distance="numeric",cumulative_distance="numeric")
-  if(length(logs) < 1){
-    SmartPrint(c("Could not find the file for player log", ptr))
+  if(length(logs) != 1){
+    if(length(logs) < 1) SmartPrint(c("Could not find the file for player log at ", filepath))
+    if(length(logs) > 1)SmartPrint(c("Could not find the file for player log at ", filepath))
     return(NULL)
   }
+  log_columns_types = c(Time="numeric",Position="numeric",Rotation.X="numeric",Rotation.Y="numeric", FPS = "numeric", Input="character")
+  preprocessed_log_column_types = c(log_columns_types, Position.x="numeric", Position.y="numeric", Position.z="numeric",distance="numeric",cumulative_distance="numeric")
   if (length(logs)>1){
     #check if there is a preprocessed player file
     preprocessed_index = grep("*_preprocessed",logs)
@@ -68,45 +69,23 @@ OpenPlayerLog = function(experiment_log, override = F){
     log = logs[1]
   }
   SmartPrint(c("Loading unprocessed player log", ptr))
-  
   #reads into a text file at first
   text = readLines(log,warn=F)
   
-  #finds the header start
-  idxTop <- which(grepl('\\*\\*\\*\\*\\*',text))
-  #finds the header bottom
-  idxBottom <- which(grepl('\\-\\-\\-\\-\\-',text))
-  #potentially returns the header as well in a list
-  #todo
-  
+  bottomHeaderIndex = GetIndexesBetween(text, "SESSION HEADER")$end
   #reads the data without the header file
-  pos_tab <- fread(log, header=T, sep=";", dec=".", skip=idxBottom, stringsAsFactors=F, colClasses = log_columns_types)
+  pos_tab <- fread(log, header=T, sep=";", dec=".", skip=bottomHeaderIndex, stringsAsFactors=F, colClasses = log_columns_types)
   #deletes the last column - it's there for the easier logging from unity 
   # - its here because of how preprocessing works
   pos_tab[,ncol(pos_tab):=NULL]
   
   return(pos_tab)
 }
-PreprocessPlayerLog = function(pos_tab){
-  
-  #check_stuff
-  #check columns
-  changed = F
-  if (!ColumnPresent(colnames(pos_tab),"Position.x")){
-    pos_tab = vector3_to_columns(pos_tab,"Position")
-    changed = T
-  }
-  if (!ColumnPresent(colnames(pos_tab),"cumulative_distance")){
-    pos_tab = AddDistanceWalked (pos_tab)
-    changed = T
-  } 
-  if (changed) print("Log modified") else print("Log ok")
-  return(changed)
-}
-SavePreprocessedPlayer = function(experiment_log, pos_tab){
-  directory = dirname(experiment_log$filename)
-  ptr = paste("_player_", experiment_log$header$Time, sep="", collapse="")
-  log = list.files(directory, pattern = ptr ,full.names = T)[1]
+SavePreprocessedPlayer = function(directory, pos_tab){
+  ptr = paste("_player_", sep="", collapse="")
+  logs = list.files(directory, pattern = ptr ,full.names = T)
+  if(length(logs)!=1) stop("More player logs in the saving directory")
+  log = logs[1]
   #writes preprocessed file
   preprocessed_filename = gsub(".txt","_preprocessed.txt",log)
   SmartPrint(c("Saving processed player log as", preprocessed_filename))

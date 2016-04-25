@@ -6,18 +6,19 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     #basic definitions
     session = NULL,
     sessionDirectory = NULL,
+    playerLog = NULL,
     initialize = function(dir, id, session=NULL){
       self$SetParticipant(id)
       private$setDataDirectory(dir)
       self$SetSession(session)
       #TODO - check the data
-      if(nargs() >= 3) {
+      if(nargs() >= 2) {
         self$ReadData()
       }
     },
     #define what is valid in the current context
-    SetSession = function(number){
-      self$session = paste("Session",number,sep="")
+    SetSession = function(session){
+      self$session = if(is.null(session)) NULL else paste("Session",session,sep="")
       return(private$setSessionDirectory())
     }
   ),
@@ -27,21 +28,22 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       self$sessionDirectory = paste(self$dataDirectory,self$session,sep="/")
       return(self$sessionDirectory)
     },
-    readData = function(){
+    readData = function(override = F, save = T){
       #checks for path
       if (is.null(self$sessionDirectory)) stop("no session directory set")
       #open experiment_logs to see how many do we have
       experimentLog = OpenExperimentLogs(self$sessionDirectory)
       
+      if(is.null(experimentLog)) stop("Experiment log not found")
       #if multiple logs, quit
-      playerLog = OpenPlayerLog(experimentLog, override)
+      self$playerLog = OpenPlayerLog(self$sessionDirectory, overrride = override)
       
-      if(is.null(playerLog)) stop("Player log not found")
+      if(is.null(self$playerLog)) stop("Player log not found")
       #preprocesses player log
       #checks if there is everything we need and if not, recomputes the stuff
-      changed = PreprocessPlayerLog(playerLog)
-      if (changed & save) SavePreprocessedPlayer(experimentLog, playerLog)
-      
+      changed = private$preprocessPlayerLog()
+      if (changed & save) SavePreprocessedPlayer(self$sessionDirectory,self$playerLog)
+      stop()
       questLogs = OpenQuestLogs()
       for (i in length(questLogs)){
         self$tasks[[i]] = questLogs[[i]]
@@ -54,6 +56,21 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       #loads experiment log
       #loads player log
       #logs all quest logs
+    },
+    preprocessPlayerLog = function(){
+    #check_stuff
+    #check columns
+    changed = F
+    if (!ColumnPresent(colnames(self$playerLog),"Position.x")){
+      self$playerLog = vector3_to_columns(self$playerLog,"Position")
+      changed = T
     }
+    if (!ColumnPresent(colnames(self$playerLog),"cumulative_distance")){
+      self$playerLog = AddDistanceWalked (self$playerLog)
+      changed = T
+    } 
+    if (changed) print("Log modified") else print("Log ok")
+    return(changed)
+  }
   )
 )
