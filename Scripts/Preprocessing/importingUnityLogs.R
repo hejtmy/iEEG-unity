@@ -127,6 +127,7 @@ OpenTestLog = function(filepath){
   ls$experimentSettings = GetJsonBetween(text, "EXPERIMENT SETTINGS")
   ls$positionSettings = GetJsonBetween(text, "POSITIONS")
 
-  ls$quests  <- read.table(filepath, header=T, sep=";",stringsAsFactors=F,skip = bottomHeaderIndex)
+  ls$data  = read.table(filepath, header=T, sep=";",stringsAsFactors=F,skip = bottomHeaderIndex)
+  ls$data[ncol(ls$data)] = NULL
   return(ls)
 }
