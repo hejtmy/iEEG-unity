@@ -35,7 +35,7 @@ MakeAllTrialImages = function(positionTable, test){
   indexes = TrialIndexes(test, "Finished")
   plots = list()
   for(i in indexes){
-    plots[[i+1]] = MakeTrialImage(positionTable,test,i+1)
+    plots[[i]] = MakeTrialImage(positionTable,test,i)
   }
   multiplot(plots ,cols = 4)
 }

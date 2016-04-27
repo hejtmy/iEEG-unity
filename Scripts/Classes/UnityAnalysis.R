@@ -23,21 +23,36 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     },
     DrawTrialImage = function(trialID){
       plot = MakeTrialImage(self$playerLog, self$tests[[1]], trialID)
+      plot
+      return(plot)
     },
-    QuestTable = function(force = F){
-      if (!is.null(private$questTable) & !force) return(private$questTable)
+    TrialInfo = function(trialID){
+      ls = list()
+      test = self$tests[[1]]
+      times = GetTrialTimewindow(test, trialID)
+      ls$duration = times$finish - times$start
+      ls$distnaces = GetTrialDistance(self$playerLog, times, test = test, trialID = trialID)
+      return(ls)
+    },
+    TestTable = function(force = F){
+      if (!is.null(private$testTable) & !force) return(private$testTable)
+      ls = list() 
       for(i in 1:length(self$tests)){
-        test = tests[[i]]
+        test = self$tests[[i]]
+        ls[[i]] = list()
         finishedTrialIndexes = TrialIndexes(test, "Finished")
         for (n in finishedTrialIndexes){
-          times = GetTrialTimewindow(test, trialID)
+          ls[[i]][[n]] = self$TrialInfo(n)
+          ls[[i]][[n]]$index = n
         }
+        testTable = as.data.frame(t(rbind(sapply(ls[[i]],unlist))))
+        return(testTable)
       }
     }
   ),
   private = list(
     #fields
-    questTable = NULL,
+    testTable = NULL,
     isValid = function(){
       return(TRUE)
     },
