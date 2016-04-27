@@ -1,3 +1,4 @@
+#pure helpers for my particular unity logging 
 CreateSeparator = function(string){
   ls = list()
   ls$beginning = paste("\\*\\*\\*\\",string,"\\*\\*\\*", sep="")
@@ -25,6 +26,7 @@ TextToJSON = function(text){
   ls = fromJSON(text)
   return(ls)
 }
+
 OpenExperimentLogs = function(directory = ""){
   ls = list()
   logs = list.files(directory, pattern = "_ExperimentInfo_",full.names = T)

@@ -14,8 +14,7 @@ SelectPlayerLog = function(playerLog, trialTimewindow){
   #checking log
   return(log)
 }
-
-GetGoalIndex = function(trialID, test){
+GetGoalIndex = function(test, trialID){
   if(GetTrialType(test, trialID)=="Allo"){
     uncorrectedIndex = test$experimentSettings$MarkOrder[trialID] + test$experimentSettings$AlloMarkRelation + 1 
   } else {
@@ -25,4 +24,8 @@ GetGoalIndex = function(trialID, test){
 }
 GetTrialType = function(test,trialID){
   return(test$experimentSettings$RandomOrdering[trialID])
+}
+TrialIndexes = function(test, event){
+  indexes = (filter(test$data, Sender == "Trial" & Event == event) %>% select(Index))[[1]]
+  return(indexes)
 }

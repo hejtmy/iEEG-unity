@@ -20,9 +20,24 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     SetSession = function(session){
       self$session = if(is.null(session)) NULL else paste("Session",session,sep="")
       return(private$setSessionDirectory())
+    },
+    DrawTrialImage = function(trialID){
+      plot = MakeTrialImage(self$playerLog, self$tests[[1]], trialID)
+    },
+    QuestTable = function(force = F){
+      if (!is.null(private$questTable) & !force) return(private$questTable)
+      for(i in 1:length(self$tests)){
+        test = tests[[i]]
+        finishedTrialIndexes = TrialIndexes(test, "Finished")
+        for (n in finishedTrialIndexes){
+          times = GetTrialTimewindow(test, trialID)
+        }
+      }
     }
   ),
   private = list(
+    #fields
+    questTable = NULL,
     isValid = function(){
       return(TRUE)
     },
@@ -60,19 +75,19 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       #logs all quest logs
     },
     preprocessPlayerLog = function(){
-    #check_stuff
-    #check columns
-    changed = F
-    if (!ColumnPresent(colnames(self$playerLog),"Position.x")){
-      self$playerLog = vector3_to_columns(self$playerLog,"Position")
-      changed = T
+      #check_stuff
+      #check columns
+      changed = F
+      if (!ColumnPresent(colnames(self$playerLog),"Position.x")){
+        self$playerLog = vector3_to_columns(self$playerLog,"Position")
+        changed = T
+      }
+      if (!ColumnPresent(colnames(self$playerLog),"cumulative_distance")){
+        self$playerLog = AddDistanceWalked (self$playerLog)
+        changed = T
+      } 
+      if (changed) print("Log modified") else print("Log ok")
+      return(changed)
     }
-    if (!ColumnPresent(colnames(self$playerLog),"cumulative_distance")){
-      self$playerLog = AddDistanceWalked (self$playerLog)
-      changed = T
-    } 
-    if (changed) print("Log modified") else print("Log ok")
-    return(changed)
-  }
   )
 )

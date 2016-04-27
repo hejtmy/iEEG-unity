@@ -17,7 +17,7 @@ MakeTrialImage = function (positionTable, test, trialID, special_paths = NULL, s
     plot = plot + geom_point(data = markPosition, aes(Position.x, Position.z), size = 10, color = "blue")
   }
   #finds goal
-  goalIndex = GetGoalIndex(trialID, test) 
+  goalIndex = GetGoalIndex(test, trialID) 
   goalPosition = test$positionSettings$GoalPositions[goalIndex,]
   goalArea = MakeCircle(c(goalPosition$Position.x, goalPosition$Position.z),test$experimentSettings$GoalSize,precision = 100)
   #draws goal
@@ -32,7 +32,7 @@ MakeTrialImage = function (positionTable, test, trialID, special_paths = NULL, s
   return(plot)
 }
 MakeAllTrialImages = function(positionTable, test){
-  indexes = (filter(test$data, Sender == "Trial" & Event == "Finished") %>% select(Index))[[1]]
+  indexes = TrialIndexes(test, "Finished")
   plots = list()
   for(i in indexes){
     plots[[i+1]] = MakeTrialImage(positionTable,test,i+1)
