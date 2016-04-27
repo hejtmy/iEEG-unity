@@ -58,10 +58,22 @@ StartPosition = function(test,startIndex, onlyXY=T){
     return(c(startPosition$Position.x,startPosition$Position.z))
   } else return(startPosition)
 }
+MarkIndex = function(test,trialID){
+  return(test$experimentSettings$MarkOrder[trialID] + 1)
+}
+MarkPosition = function(test,MarkIndex, onlyXY=T){
+  markPosition = test$positionSettings$MarkPositions[MarkIndex,]
+  if (onlyXY){
+    return(c(markPosition$Position.x,markPosition$Position.z))
+  } else return(markPosition)
+}
 GetTrialType = function(test,trialID){
   return(test$experimentSettings$RandomOrdering[trialID])
 }
 TrialIndexes = function(test, event){
   indexes = unique(filter(test$data, Sender == "Trial" & Event == event) %>% select(Index))[[1]]
   return(indexes+1)
+}
+WasForceFinished = function(test, trialID){
+  return(nrow(filter(test$data, Sender == "Trial" & Index == (trialID-1) & Event == "ForceFinished")) >1)
 }
