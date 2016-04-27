@@ -45,6 +45,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
           ls[[i]][[n]] = self$TrialInfo(n)
           ls[[i]][[n]]$index = n
         }
+        #transposes and converst the list - normally list unlists horizontaly, we need to transpose ti
         testTable = as.data.frame(t(rbind(sapply(ls[[i]],unlist))))
         return(testTable)
       }
