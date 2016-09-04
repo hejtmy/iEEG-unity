@@ -22,7 +22,7 @@ MakeTrialImage = function (positionTable, test, trialID, special_paths = NULL, s
   goalArea = MakeCircle(c(goalPosition$Position.x, goalPosition$Position.z),test$experimentSettings$GoalSize,precision = 100)
   #draws goal
   plot = plot +
-    geom_point(data=goalPosition, aes(Position.x, Position.z), size = 10, color = "red") +
+    geom_point(data=goalPosition, aes(Position.x, Position.z), size = 5, color = "red") +
     geom_path(data = goalArea, aes(x, y), color = "red")
   
   #plots player
@@ -31,11 +31,11 @@ MakeTrialImage = function (positionTable, test, trialID, special_paths = NULL, s
   plot = plot + geom_path(data = playerLog, aes(Position.x, Position.z))
   return(plot)
 }
-MakeAllTrialImages = function(positionTable, test){
-  indexes = TrialIndexes(test, "Finished")
+MakeTrialImages = function(positionTable, test, columns = 5, indexes = c()){
+  indexes = if (length(indexes)==0) TrialIndexes(test, "Finished") else indexes
   plots = list()
   for(i in indexes){
     plots[[i]] = MakeTrialImage(positionTable,test,i)
   }
-  multiplot(plots ,cols = 4)
+  multiplot(plots ,cols = columns)
 }
