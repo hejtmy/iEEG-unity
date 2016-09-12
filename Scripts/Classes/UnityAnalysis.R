@@ -20,9 +20,41 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     SetSession = function(session){
       self$session = if(is.null(session)) NULL else paste("Session",session,sep="")
       return(private$setSessionDirectory())
+    },
+    DrawTrialImage = function(trialID){
+      plot = MakeTrialImage(self$playerLog, self$tests[[1]], trialID)
+      plot
+      return(plot)
+    },
+    TrialInfo = function(trialID){
+      ls = list()
+      test = self$tests[[1]]
+      times = GetTrialTimewindow(test, trialID)
+      ls$duration = times$finish - times$start
+      ls$distances = GetTrialDistance(self$playerLog, times, test = test, trialID = trialID)
+      ls$type = GetTrialType(test,trialID)
+      return(ls)
+    },
+    TestTable = function(force = F){
+      if (!is.null(private$testTable) & !force) return(private$testTable)
+      ls = list() 
+      for(i in 1:length(self$tests)){
+        test = self$tests[[i]]
+        ls[[i]] = list()
+        finishedTrialIndexes = TrialIndexes(test, "Finished")
+        for (n in finishedTrialIndexes){
+          ls[[i]][[n]] = self$TrialInfo(n)
+          ls[[i]][[n]]$index = n
+        }
+        #transposes and converst the list - normally list unlists horizontaly, we need to transpose ti
+        testTable = as.data.frame(t(rbind(sapply(ls[[i]],unlist))))
+        return(testTable)
+      }
     }
   ),
   private = list(
+    #fields
+    testTable = NULL,
     isValid = function(){
       return(TRUE)
     },
@@ -60,19 +92,19 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       #logs all quest logs
     },
     preprocessPlayerLog = function(){
-    #check_stuff
-    #check columns
-    changed = F
-    if (!ColumnPresent(colnames(self$playerLog),"Position.x")){
-      self$playerLog = vector3_to_columns(self$playerLog,"Position")
-      changed = T
+      #check_stuff
+      #check columns
+      changed = F
+      if (!ColumnPresent(colnames(self$playerLog),"Position.x")){
+        self$playerLog = vector3_to_columns(self$playerLog,"Position")
+        changed = T
+      }
+      if (!ColumnPresent(colnames(self$playerLog),"cumulative_distance")){
+        self$playerLog = AddDistanceWalked (self$playerLog)
+        changed = T
+      } 
+      if (changed) print("Log modified") else print("Log ok")
+      return(changed)
     }
-    if (!ColumnPresent(colnames(self$playerLog),"cumulative_distance")){
-      self$playerLog = AddDistanceWalked (self$playerLog)
-      changed = T
-    } 
-    if (changed) print("Log modified") else print("Log ok")
-    return(changed)
-  }
   )
 )

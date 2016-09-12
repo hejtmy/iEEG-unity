@@ -3,6 +3,10 @@ source("Scripts/Loading.R")
 
 dataDirectory = "../Data"
 
-Analysis = UnityAnalysis$new(participant, sessionId)
+Analysis = UnityAnalysis$new(dataDirectory, "final")
+Analysis$TestTable()
 
-Analysis = UnityAnalysis$new(dataDirectory, "23", 1)
+
+MakeTrialImages(Analysis$playerLog, Analysis$tests[[1]], indexes = c(2:3))
+MakeAllTrialImages(Analysis$playerLog, Analysis$tests[[1]])
+

@@ -1,3 +1,4 @@
+#pure helpers for my particular unity logging 
 CreateSeparator = function(string){
   ls = list()
   ls$beginning = paste("\\*\\*\\*\\",string,"\\*\\*\\*", sep="")
@@ -25,6 +26,7 @@ TextToJSON = function(text){
   ls = fromJSON(text)
   return(ls)
 }
+
 OpenExperimentLogs = function(directory = ""){
   ls = list()
   logs = list.files(directory, pattern = "_ExperimentInfo_",full.names = T)
@@ -126,7 +128,24 @@ OpenTestLog = function(filepath){
   text = GetTextBetween(text,"TEST HEADER")
   ls$experimentSettings = GetJsonBetween(text, "EXPERIMENT SETTINGS")
   ls$positionSettings = GetJsonBetween(text, "POSITIONS")
-
-  ls$quests  <- read.table(filepath, header=T, sep=";",stringsAsFactors=F,skip = bottomHeaderIndex)
+  
+  ls$positionSettings = CovertPositionsToVectors(ls$positionSettings)
+  
+  ls$data  = read.table(filepath, header=T, sep=";",stringsAsFactors=F,skip = bottomHeaderIndex)
+  ls$data[ncol(ls$data)] = NULL
   return(ls)
+}
+CovertPositionsToVectors = function(list){
+  listNames = names(list)
+  for(name in listNames){
+    ls = list[[name]]
+    numberOfItems = length(ls)
+    df = data.frame(Position.x = numeric(numberOfItems),Position.y = numeric(numberOfItems),Position.z = numeric(numberOfItems))
+    for (i in 1:length(ls)){
+      stringVector = ls[i]
+      df[i,] = textToVector3(stringVector)
+    }
+    list[[name]] = df
+  }
+  return(list)
 }
