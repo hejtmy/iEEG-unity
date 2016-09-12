@@ -1,8 +1,8 @@
 make_trial_images = function(dt_position, test, columns = 5, indexes = c()){
-  indexes = if (length(indexes)==0) TrialIndexes(test, "Finished") else indexes
+  indexes = if (length(indexes) == 0) TrialIndexes(test, "Finished") else indexes
   plots = list()
-  for(i in indexes){
-    plots[[i]] = make_trial_image(dt_position, test, i)
+  for(i in 1:length(indexes)){
+    plots[[i]] = make_trial_image(dt_position, test, indexes[i])
   }
   multiplot(plots, cols = columns)
 }
