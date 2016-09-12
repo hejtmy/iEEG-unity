@@ -13,7 +13,7 @@ SavePlot = function(inputPlot,name){
   plot(inputPlot)
   dev.off()
 }
-MakeCircle <- function(center = c(0,0), radius = 1, precision = 100){
+MakeCircle = function(center = c(0,0), radius = 1, precision = 100){
   tt <- seq(0, 2*pi, length.out = precision)
   xx <- center[1] + radius * cos(tt)
   yy <- center[2] + radius * sin(tt)
@@ -30,8 +30,7 @@ AddPointsToPlot = function(plot, ls){
   plot = plot + geom_point(data = data_table, aes(point.x,point.y),size = 4, color = "blue") + geom_text(data = data_table, aes(point.x, point.y,label=point.name))
   return(plot)
 }
-
-theme_invisible <- function(base_size = 12) {
+theme_invisible = function(base_size = 12) {
   structure(list(
     axis.line =         theme_void,
     axis.text.x =       theme_text(colour = NA,size = base_size * 0.8 , lineheight = 0.9, vjust = 1),
@@ -75,7 +74,7 @@ theme_invisible <- function(base_size = 12) {
 # then plot 1 will go in the upper left, 2 will go in the upper right, and
 # 3 will go all the way across the bottom.
 #
-multiplot <- function(plotlist=NULL, file, cols=1, layout=NULL) {
+multiplot = function(plotlist = NULL, file, cols=1, layout=NULL) {
   
   numPlots = length(plotlist)
   
