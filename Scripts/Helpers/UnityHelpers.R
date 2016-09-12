@@ -52,7 +52,7 @@ GoalPosition = function(test,goalIndex,onlyXY = F){
 StartIndex = function(test, trialID){
   return(test$experimentSettings$StartOrder[trialID] + 1)
 }
-StartPosition = function(test,¨startIndex, onlyXY = F){
+StartPosition = function(test, startIndex, onlyXY = F){
   startPosition = test$positionSettings$StartPositions[startIndex,]
   if (onlyXY){
     return(c(startPosition$Position.x,startPosition$Position.z))
