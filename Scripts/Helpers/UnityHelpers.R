@@ -43,7 +43,7 @@ GetGoalIndex = function(test, trialID){
   }
   if(uncorrectedIndex>test$experimentSettings$NumberOfGoals) return(uncorrectedIndex-test$experimentSettings$NumberOfGoals) else return(uncorrectedIndex)
 }
-GoalPosition = function(test,goalIndex,onlyXY = F){
+GoalPosition = function(test, goalIndex, onlyXY = F){
   goalPosition = test$positionSettings$GoalPositions[goalIndex,]
   if (onlyXY){
     return(c(goalPosition$Position.x, goalPosition$Position.z))
@@ -58,16 +58,16 @@ StartPosition = function(test, startIndex, onlyXY = F){
     return(c(startPosition$Position.x,startPosition$Position.z))
   } else return(startPosition)
 }
-MarkIndex = function(test,trialID){
+MarkIndex = function(test, trialID){
   return(test$experimentSettings$MarkOrder[trialID] + 1)
 }
-MarkPosition = function(test,MarkIndex, onlyXY = F){
+MarkPosition = function(test, MarkIndex, onlyXY = F){
   markPosition = test$positionSettings$MarkPositions[MarkIndex,]
   if (onlyXY){
-    return(c(markPosition$Position.x,markPosition$Position.z))
+    return(c(markPosition$Position.x, markPosition$Position.z))
   } else return(markPosition)
 }
-GetTrialType = function(test,trialID){
+GetTrialType = function(test, trialID){
   return(test$experimentSettings$RandomOrdering[trialID])
 }
 TrialIndexes = function(test, event){
