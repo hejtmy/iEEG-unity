@@ -43,16 +43,16 @@ GetGoalIndex = function(test, trialID){
   }
   if(uncorrectedIndex>test$experimentSettings$NumberOfGoals) return(uncorrectedIndex-test$experimentSettings$NumberOfGoals) else return(uncorrectedIndex)
 }
-GoalPosition = function(test,goalIndex,onlyXY = T){
+GoalPosition = function(test,goalIndex,onlyXY = F){
   goalPosition = test$positionSettings$GoalPositions[goalIndex,]
   if (onlyXY){
-    return(c(goalPosition$Position.x,goalPosition$Position.z))
+    return(c(goalPosition$Position.x, goalPosition$Position.z))
   } else return(goalPosition)
 }
-StartIndex = function(test,trialID){
+StartIndex = function(test, trialID){
   return(test$experimentSettings$StartOrder[trialID] + 1)
 }
-StartPosition = function(test,startIndex, onlyXY=T){
+StartPosition = function(test,¨startIndex, onlyXY = F){
   startPosition = test$positionSettings$StartPositions[startIndex,]
   if (onlyXY){
     return(c(startPosition$Position.x,startPosition$Position.z))
@@ -61,7 +61,7 @@ StartPosition = function(test,startIndex, onlyXY=T){
 MarkIndex = function(test,trialID){
   return(test$experimentSettings$MarkOrder[trialID] + 1)
 }
-MarkPosition = function(test,MarkIndex, onlyXY=T){
+MarkPosition = function(test,MarkIndex, onlyXY = F){
   markPosition = test$positionSettings$MarkPositions[MarkIndex,]
   if (onlyXY){
     return(c(markPosition$Position.x,markPosition$Position.z))
