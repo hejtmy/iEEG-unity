@@ -31,7 +31,8 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       test = self$tests[[1]]
       times = GetTrialTimewindow(test, trialID)
       ls$duration = times$finish - times$start
-      ls$distnaces = GetTrialDistance(self$playerLog, times, test = test, trialID = trialID)
+      ls$distances = GetTrialDistance(self$playerLog, times, test = test, trialID = trialID)
+      ls$type = GetTrialType(test,trialID)
       return(ls)
     },
     TestTable = function(force = F){

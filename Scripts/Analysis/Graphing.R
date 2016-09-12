@@ -7,22 +7,22 @@ MakeTrialImage = function (positionTable, test, trialID, special_paths = NULL, s
   
   plot = plot + geom_path(data = roundArena, aes(x,y))
   #draws start point
-  startIndex = test$experimentSettings$StartOrder[trialID] + 1
-  startPosition = test$positionSettings$StartPositions[startIndex,]
-  plot = plot + geom_point(data = startPosition, aes(Position.x, Position.z), size = 10, color = "red")
+  startIndex = StartIndex(test, trialID)
+  startPosition = StartPosition(test, startIndex)
+  plot = plot + geom_point(aes(startPosition), size = 10, color = "red")
   #draws mark
   if(GetTrialType(test,trialID) == "Allo") {
-    markIndex = test$experimentSettings$MarkOrder[trialID] + 1
-    markPosition = test$positionSettings$MarkPositions[markIndex,]
-    plot = plot + geom_point(data = markPosition, aes(Position.x, Position.z), size = 10, color = "blue")
+    markIndex = MarkIndex(test,trialID)
+    markPosition = MarkPosition(test,markIndex)
+    plot = plot + geom_point(aes(markPosition), size = 10, color = "blue")
   }
   #finds goal
   goalIndex = GetGoalIndex(test, trialID) 
-  goalPosition = test$positionSettings$GoalPositions[goalIndex,]
-  goalArea = MakeCircle(c(goalPosition$Position.x, goalPosition$Position.z),test$experimentSettings$GoalSize,precision = 100)
+  goalPosition = GoalPosition(test, goalIndex)
+  goalArea = MakeCircle(goalPosition,test$experimentSettings$GoalSize,precision = 100)
   #draws goal
   plot = plot +
-    geom_point(data=goalPosition, aes(Position.x, Position.z), size = 5, color = "red") +
+    geom_point(data = goalPosition, aes(Position.x, Position.z), size = 5, color = "red") +
     geom_path(data = goalArea, aes(x, y), color = "red")
   
   #plots player
