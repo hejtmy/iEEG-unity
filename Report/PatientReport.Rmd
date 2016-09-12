@@ -14,15 +14,28 @@ source("Scripts/Loading.R")
 Analysis = UnityAnalysis$new(data_dir, code)
 ```
 
-Během svého pobytu v Nemocnici v Motole jste se zúčastnil/a experimentů vedených výzkumníky z Oddělení neurofyziologie paměti pod Fyziologickým ústavem Akademie Věd České republiky. Mnohokrát Vám děkujeme za Váš drahocený čas. Jako menší odměnu prosím přimětě tuto zprávu z Vašeho testování. Vzhledem k anonymitě jste veden/a pod kódem `code`.
+Během svého pobytu v Nemocnici v Motole jste se zúčastnil/a experimentů vedených výzkumníky z Oddělení neurofyziologie paměti pod Fyziologickým ústavem Akademie Věd České republiky. Mnohokrát Vám děkujeme za Váš drahocený čas. Jako menší odměnu prosím přimětě tuto zprávu z Vašeho testování. Vzhledem k anonymitě jste veden/a pod kódem ```r code```.
 
 # Virtuální experiment
 V jednom z experimentů jste absolvoval/a řešení navigačních úloh na počítači. Tyto úlohy zahrnovaly pohyb po simulaci stanu úmístěného v Nemocnici motol a hledání značek ukrytých na zemi. Níže můžete nalézt náhres s popisky tohoto stanu pro připomenutí.
 
-```{r, echo = FALSE}
-
-```
-
 Úloha zahrnovala nalezení cíle, který se pohyboval po stanu v závislosti na značce v místnosti nebo v závislosti na Vaší startovní pozici. Pozice těchto cílů za obou podmínek je znázorněna na obrázku.
 
-Zde jsou nakreslené Vaše trasy. Zelené jsou ohraničeny trasy, kdy jste měl/a hledat.
+Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle značky na stěně:
+```{r, echo = FALSE}
+i_allo = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Allo")
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indexes = c(i_allo))
+```
+
+
+Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle startovní pozice:
+```{r, echo = FALSE}
+i_ego = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Ego")
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indexes = c(i_ego))
+```
+
+```{r, echo = FALSE}
+df = Analysis$TestTable()
+```
+
+Váš průměrný čas byl
