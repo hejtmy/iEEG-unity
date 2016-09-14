@@ -1,9 +1,3 @@
-SelectPlayerLog = function(playerLog, trialTimewindow){
-  #checking for entirety
-  log = playerLog[Time > trialTimewindow$start & Time < trialTimewindow$finish]
-  #checking log
-  return(log)
-}
 GetGoalIndex = function(test, trialID){
   if(get_trial_type(test, trialID)=="Allo"){
     uncorrectedIndex = test$experimentSettings$MarkOrder[trialID] + test$experimentSettings$AlloMarkRelation + 1 

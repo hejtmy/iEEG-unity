@@ -38,7 +38,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       ls = list() 
       test = self$tests[[1]]
       df_test = test_results(test, self$playerLog)
-      return(testTable)
+      return(df_test)
     }
   ),
   private = list(
