@@ -8,7 +8,7 @@ make_trial_image = function (dt_position, test, trialID, special_paths = NULL, s
   plot = add_start(plot, test, trialID)
   
   #draws mark 
-  if(GetTrialType(test, trialID) == "Allo") plot = add_mark(plot, test, trialID)
+  if(get_trial_type(test, trialID) == "Allo") plot = add_mark(plot, test, trialID)
   
   #plot goal
   plot = add_goal(plot, test, trialID)
