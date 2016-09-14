@@ -1,12 +1,9 @@
 #give me folder
 source("Scripts/Loading.R")
 
-dataDirectory = "../Data"
+data_dir = "../Data"
 
-Analysis = UnityAnalysis$new(dataDirectory, "final")
-Analysis$TestTable()
+Analysis = UnityAnalysis$new(data_dir, "P108")
+Analysis$TestResults()
 
-
-MakeTrialImages(Analysis$playerLog, Analysis$tests[[1]], indexes = c(2:3))
-MakeAllTrialImages(Analysis$playerLog, Analysis$tests[[1]])
-
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(2:3))

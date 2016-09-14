@@ -29,27 +29,16 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     TrialInfo = function(trialID){
       ls = list()
       test = self$tests[[1]]
-      times = GetTrialTimewindow(test, trialID)
-      ls$duration = times$finish - times$start
-      ls$distances = GetTrialDistance(self$playerLog, times, test = test, trialID = trialID)
-      ls$type = GetTrialType(test,trialID)
+      ls = get_trial_info(test, trialID, self$playerLog)
+      
       return(ls)
     },
-    TestTable = function(force = F){
+    TestResults = function(force = F){
       if (!is.null(private$testTable) & !force) return(private$testTable)
       ls = list() 
-      for(i in 1:length(self$tests)){
-        test = self$tests[[i]]
-        ls[[i]] = list()
-        finishedTrialIndexes = TrialIndexes(test, "Finished")
-        for (n in finishedTrialIndexes){
-          ls[[i]][[n]] = self$TrialInfo(n)
-          ls[[i]][[n]]$index = n
-        }
-        #transposes and converst the list - normally list unlists horizontaly, we need to transpose ti
-        testTable = as.data.frame(t(rbind(sapply(ls[[i]],unlist))))
-        return(testTable)
-      }
+      test = self$tests[[1]]
+      df_test = test_results(test, self$playerLog)
+      return(df_test)
     }
   ),
   private = list(
