@@ -24,18 +24,18 @@ V jednom z experimentů jste absolvoval/a řešení navigačních úloh na poč�
 Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle značky na stěně:
 ```{r, echo = FALSE}
 i_allo = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Allo")
-make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indexes = c(i_allo))
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_allo))
 ```
 
 
 Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle startovní pozice:
 ```{r, echo = FALSE}
 i_ego = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Ego")
-make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indexes = c(i_ego))
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_ego))
 ```
 
 ```{r, echo = FALSE}
-df = Analysis$TestTable()
+df = Analysis$TestResults()
 ```
 
 Váš průměrný čas byl
