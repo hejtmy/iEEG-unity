@@ -7,13 +7,13 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     session = NULL,
     sessionDirectory = NULL,
     playerLog = NULL,
-    initialize = function(dir, id, session=NULL){
+    initialize = function(dir, id, session = NULL, override = F){
       self$SetParticipant(id)
       private$setDataDirectory(dir)
       self$SetSession(session)
       #TODO - check the data
       if(nargs() >= 2) {
-        self$ReadData()
+        self$ReadData(override)
       }
     },
     #define what is valid in the current context
