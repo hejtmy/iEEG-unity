@@ -5,22 +5,26 @@ CreateSeparator = function(string){
   ls$end = paste("\\-\\-\\-",string,"\\-\\-\\-", sep="")
   return(ls)
 }
+
 GetIndexesBetween=function(text,string){
   ls=list()
   ls$beginning = which(grepl(CreateSeparator(string)$beginning,text))
   ls$end = which(grepl(CreateSeparator(string)$end,text))
   return(ls)
 }
+
 GetTextBetween=function(text, string){
   indexes = GetIndexesBetween(text, string)
   if (length(indexes$beginning) != 1 || length(indexes$end) !=1) return (NULL)
   text = text[(indexes$beginning+1):(indexes$end-1)]
   return(text)
 }
+
 GetJsonBetween = function(text, string){
   ls = TextToJSON(GetTextBetween(text,string))
   return(ls)
 }
+
 TextToJSON = function(text){
   #JSON checking
   ls = fromJSON(text)
@@ -56,8 +60,10 @@ OpenPlayerLog = function(directory, override = F){
     SmartPrint(c("Could not find the file for player log in ", directory))
     return(NULL)
   }
-  log_columns_types = c(Time="numeric",Position="numeric",Rotation.X="numeric",Rotation.Y="numeric", FPS = "numeric", Input="character")
-  preprocessed_log_column_types = c(log_columns_types, Position.x="numeric", Position.y="numeric", Position.z="numeric",distance="numeric",cumulative_distance="numeric")
+  log_columns_types = c(Time="numeric", Position = "numeric", Rotation.X = "numeric", Rotation.Y="numeric", 
+                        FPS = "numeric", Input = "character")
+  preprocessed_log_column_types = c(log_columns_types, Position.x = "numeric", Position.y = "numeric", Position.z = "numeric", 
+                                    distance = "numeric", cumulative_distance = "numeric", angle_diff = "numeric")
   if (length(logs)>1){
     #check if there is a preprocessed player file
     preprocessed_index = grep("*_preprocessed",logs)
@@ -83,7 +89,7 @@ OpenPlayerLog = function(directory, override = F){
   }
   SmartPrint(c("Loading unprocessed player log", ptr))
   #reads into a text file at first
-  text = readLines(log,warn=F)
+  text = readLines(log, warn = F)
   
   bottomHeaderIndex = GetIndexesBetween(text, "SESSION HEADER")$end
   #reads the data without the header file

@@ -7,6 +7,6 @@ export_player_log = function(playerLog, path){
   playerLog[, Position := NULL]
   filePath = paste(path, "playerLog.log", sep = "/", collapse = "")
   colnames(playerLog) = c("Time", "RotationX", "RotationY", "FPS", "Input", "PositionX", 
-                          "PositionY", "PositionZ", "distance", "cummulativeDistance")
+                          "PositionY", "PositionZ", "distance", "cummulativeDistance", "angleDiff")
   write.table(playerLog, filePath, sep = ";", quote = F, row.names = F)
 }
