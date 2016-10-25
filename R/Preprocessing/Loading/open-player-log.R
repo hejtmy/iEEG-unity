@@ -1,4 +1,4 @@
-OpenPlayerLog = function(directory, override = F){
+open_player_log = function(directory, override = F){
   ptr = "_player_"
   logs = list.files(directory, pattern = ptr, full.names = T)
   if(length(logs) < 1){
@@ -38,7 +38,8 @@ OpenPlayerLog = function(directory, override = F){
   
   bottomHeaderIndex = GetIndexesBetween(text, "SESSION HEADER")$end
   #reads the data without the header file
-  pos_tab <- fread(log, header=T, sep=";", dec=".", skip=bottomHeaderIndex, stringsAsFactors=F, colClasses = log_columns_types)
+  pos_tab = fread(log, header = T, sep = ";", dec=".", skip = bottomHeaderIndex, 
+                  stringsAsFactors=F, colClasses = log_columns_types)
   #deletes the last column - it's there for the easier logging from unity 
   # - its here because of how preprocessing works
   pos_tab[,ncol(pos_tab):=NULL]

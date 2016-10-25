@@ -1,4 +1,4 @@
-OpenTestLog = function(filepath){
+open_test_log = function(filepath){
   ls = list()
   #reads into a text file at first
   

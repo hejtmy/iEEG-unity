@@ -1,4 +1,4 @@
-OpenExperimentLogs = function(directory = ""){
+open_experiment_logs = function(directory = ""){
   ls = list()
   logs = list.files(directory, pattern = "_ExperimentInfo_",full.names = T)
   if(length(logs) < 1){
@@ -6,7 +6,7 @@ OpenExperimentLogs = function(directory = ""){
     return(NULL)
   }
   for(i in 1:length(logs)){
-    ls[[i]] = OpenExperimentLog(logs[i])
+    ls[[i]] = open_experiment_log(logs[i])
     ls[[i]]$filename = logs[i]
   }
   if (length(ls) == 1) ls = ls[[1]]

@@ -1,4 +1,4 @@
-OpenExperimentLog = function(filepath){
+open_experiment_log = function(filepath){
   ls = list()
   #reads into a text file at first
   text = readLines(filepath,warn=F)
