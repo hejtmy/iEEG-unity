@@ -1,6 +1,6 @@
-GetTextBetween = function(text, string){
-  indexes = GetIndexesBetween(text, string)
-  if (length(indexes$beginning) != 1 || length(indexes$end) !=1) return (NULL)
-  text = text[(indexes$beginning+1):(indexes$end-1)]
+get_text_between = function(text, string){
+  indices = get_indicies_between(text, string)
+  if (length(indices$beginning) != 1 || length(indices$end) != 1) return (NULL)
+  text = text[(indices$beginning + 1):(indices$end - 1)]
   return(text)
 }

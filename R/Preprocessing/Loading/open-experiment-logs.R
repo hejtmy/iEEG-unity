@@ -1,6 +1,6 @@
 open_experiment_logs = function(directory = ""){
   ls = list()
-  logs = list.files(directory, pattern = "_ExperimentInfo_",full.names = T)
+  logs = list.files(directory, pattern = "_ExperimentInfo_", full.names = T)
   if(length(logs) < 1){
     print("Could not find the file for experiment log")
     return(NULL)

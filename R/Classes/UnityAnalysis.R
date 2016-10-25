@@ -18,7 +18,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     },
     #define what is valid in the current context
     SetSession = function(session){
-      self$session = if(is.null(session)) NULL else paste("Session",session,sep="")
+      self$session = if(is.null(session)) NULL else paste("Session", session, sep="")
       return(private$setSessionDirectory())
     },
     DrawTrialImage = function(trialID){
@@ -59,9 +59,9 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       experimentLog = open_experiment_logs(self$sessionDirectory)
       
       if(is.null(experimentLog)) stop("Experiment log not found")
-      #if multiple logs, quit
-      self$playerLog = open_player_log(self$sessionDirectory, override = override)
+      #if multiple logs or no logs, quit
       
+      self$playerLog = open_player_log(self$sessionDirectory, override = override)
       if(is.null(self$playerLog)) stop("Player log not found")
       #preprocesses player log
       #checks if there is everything we need and if not, recomputes the stuff

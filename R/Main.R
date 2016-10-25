@@ -1,9 +1,9 @@
 #give me folder
-source("Scripts/Loading.R")
+source("R/Loading.R")
 
-dataDir = "../Data"
+data_dir = "../Data"
 
-Analysis = UnityAnalysis$new(dataDir, "p108")
+Analysis = UnityAnalysis$new(data_dir, "p108")
 Analysis$TestResults()
 
 make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(2:3))

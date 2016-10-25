@@ -2,24 +2,25 @@ open_player_log = function(directory, override = F){
   ptr = "_player_"
   logs = list.files(directory, pattern = ptr, full.names = T)
   if(length(logs) < 1){
-    SmartPrint(c("Could not find the file for player log in ", directory))
+    smart_print(c("Could not find the file for player log in ", directory))
     return(NULL)
   }
-  log_columns_types = c(Time="numeric", Position = "numeric", Rotation.X = "numeric", Rotation.Y="numeric", 
-                        FPS = "numeric", Input = "character")
+  log_columns_types = c(Time = "numeric", Position = "numeric", Rotation.X = "numeric", 
+                        Rotation.Y = "numeric", FPS = "numeric", Input = "character")
   preprocessed_log_column_types = c(log_columns_types, Position.x = "numeric", Position.y = "numeric", Position.z = "numeric", 
                                     distance = "numeric", cumulative_distance = "numeric", angle_diff = "numeric")
-  if (length(logs)>1){
+  if (length(logs) > 1){
     #check if there is a preprocessed player file
-    preprocessed_index = grep("*_preprocessed",logs)
+    preprocessed_index = grep("*_preprocessed", logs)
     if(length(preprocessed_index) > 0){
       if(override){
-        SmartPrint(c("Removing preprocessed log", ptr))
+        smart_print(c("Removing preprocessed log", ptr))
         file.remove(logs[preprocessed_index])
       } else {
-        SmartPrint(c("Loading preprocessed player log", ptr))
+        smart_print(c("Loading preprocessed player log", ptr))
         log = logs[preprocessed_index]
-        return(fread(log, header=T, sep=";",dec=".", stringsAsFactors = F, colClasses = preprocessed_log_column_types))
+        return(fread(log, header = T, sep = ";", dec = ".", stringsAsFactors = F, 
+                     colClasses = preprocessed_log_column_types))
       }
     } else{
       print("There is more player logs with appropriate timestamp in the same folder. Have you named and stored everything appropriately?")
@@ -27,22 +28,22 @@ open_player_log = function(directory, override = F){
     }
   } else {
     if(length(logs) > 1){
-      SmartPrint(c("Multiple player logs in ", directory))
+      smart_print(c("Multiple player logs in ", directory))
       return(NULL)
     } 
     log = logs[1]
   }
-  SmartPrint(c("Loading unprocessed player log", ptr))
+  smart_print(c("Loading unprocessed player log", ptr))
   #reads into a text file at first
   text = readLines(log, warn = F)
   
-  bottomHeaderIndex = GetIndexesBetween(text, "SESSION HEADER")$end
+  bottomHeaderIndex = get_indicies_between(text, "SESSION HEADER")$end
   #reads the data without the header file
   pos_tab = fread(log, header = T, sep = ";", dec=".", skip = bottomHeaderIndex, 
-                  stringsAsFactors=F, colClasses = log_columns_types)
+                  stringsAsFactors = F, colClasses = log_columns_types)
   #deletes the last column - it's there for the easier logging from unity 
   # - its here because of how preprocessing works
-  pos_tab[,ncol(pos_tab):=NULL]
+  pos_tab[, ncol(pos_tab) := NULL]
   
   return(pos_tab)
 }
