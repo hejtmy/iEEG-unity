@@ -84,15 +84,15 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       #check_stuff
       #check columns
       changed = F
-      if (!ColumnPresent(colnames(self$playerLog), "Position.x")){
+      if (!ColumnPresent(self$playerLog, "Position.x")){
         self$playerLog = vector3_to_columns(self$playerLog, "Position")
         changed = T
       }
-      if (!ColumnPresent(colnames(self$playerLog), "cumulative_distance")){
+      if (!ColumnPresent(self$playerLog, "cumulative_distance")){
         self$playerLog = AddDistanceWalked (self$playerLog)
         changed = T
       }
-      if (!ColumnPresent(colnames(self$playerLog), "angle_diff")){
+      if (!ColumnPresent(self$playerLog, "angle_diff")){
         self$playerLog = AddAngleDifference(self$playerLog)
         changed = T
       }
