@@ -29,7 +29,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     TrialInfo = function(trialID){
       ls = list()
       test = self$tests[[1]]
-      ls = get_trial_info(test, trialID, self$playerLog)
+      ls = trial_info(test, trialID, self$playerLog)
       
       return(ls)
     },
@@ -39,6 +39,9 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       test = self$tests[[1]]
       df_test = test_results(test, self$playerLog)
       return(df_test)
+    },
+    ExportSynchropulses = function(){
+      export_pulses
     }
   ),
   private = list(
