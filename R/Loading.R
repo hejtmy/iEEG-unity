@@ -11,6 +11,7 @@ library('jsonlite')
 
 source(paste(getwd(),"R/Helpers/source-folder.R", sep="/"))
 source_folder(paste(getwd(),"R/Helpers/", sep="/"))
+source_folder(paste(getwd(),"R/Exporting/", sep="/"))
 source_folder(paste(getwd(),"R/Analysis/", sep="/"))
 source_folder(paste(getwd(),"R/Classes/", sep="/"))
 source_folder(paste(getwd(),"R/Preprocessing/", sep="/"))
