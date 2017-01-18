@@ -10,7 +10,7 @@ css: "Style/markdown5.css"
 code = "P108"
 setwd("../")
 data_dir = "../Data/"
-source("Scripts/Loading.R")
+source("R/Loading.R")
 Analysis = UnityAnalysis$new(data_dir, code)
 ```
 
@@ -18,7 +18,7 @@ Analysis = UnityAnalysis$new(data_dir, code)
 df = Analysis$TestResults()
 ```
 
-Během svého pobytu v Nemocnici v Motole jste se zúčastnil/a experimentů vedených výzkumníky z Oddělení neurofyziologie paměti pod Fyziologickým ústavem Akademie Věd České republiky. Mnohokrát Vám děkujeme za Váš drahocený čas. Jako menší odměnu prosím přimětě tuto zprávu z Vašeho testování. Vzhledem k anonymitě jste veden/a pod kódem `r code`.
+Během svého pobytu v Nemocnici v Motole jste se zúčastnil/a experimentů vedených výzkumníky z Oddělení neurofyziologie paměti pod Fyziologickým ústavem Akademie Věd České republiky. Mnohokrát Vám děkujeme za Váš drahocený čas. Jako menší odměnu prosím přijmětě tuto zprávu z Vašeho testování. Vzhledem k anonymitě jste veden/a pod kódem `r code`.
 
 # Virtuální experiment
 V jednom z experimentů jste absolvoval/a řešení navigačních úloh na počítači. Tyto úlohy zahrnovaly pohyb po simulaci stanu úmístěného v Nemocnici motol a hledání značek ukrytých na zemi. Níže můžete nalézt nákres s popisky tohoto stanu pro připomenutí.
@@ -71,4 +71,3 @@ Váš průměrný čas pro tento typ úloh byl `r time` vteřin. Průměrná vzd
 
 
 ## Modrý stan
-
