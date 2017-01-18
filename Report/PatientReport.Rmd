@@ -1,0 +1,73 @@
+---
+title: "Patient Report"
+author: "Lukáš Hejtmanek"
+date: "12. září 2016"
+output: html_document
+css: "Style/markdown5.css"
+---
+
+```{r, echo = FALSE, warning = F, error = FALSE, message = F, results = 'hide'}
+code = "P108"
+setwd("../")
+data_dir = "../Data/"
+source("R/Loading.R")
+Analysis = UnityAnalysis$new(data_dir, code)
+```
+
+```{r, echo = FALSE}
+df = Analysis$TestResults()
+```
+
+Během svého pobytu v Nemocnici v Motole jste se zúčastnil/a experimentů vedených výzkumníky z Oddělení neurofyziologie paměti pod Fyziologickým ústavem Akademie Věd České republiky. Mnohokrát Vám děkujeme za Váš drahocený čas. Jako menší odměnu prosím přijmětě tuto zprávu z Vašeho testování. Vzhledem k anonymitě jste veden/a pod kódem `r code`.
+
+# Virtuální experiment
+V jednom z experimentů jste absolvoval/a řešení navigačních úloh na počítači. Tyto úlohy zahrnovaly pohyb po simulaci stanu úmístěného v Nemocnici motol a hledání značek ukrytých na zemi. Níže můžete nalézt nákres s popisky tohoto stanu pro připomenutí.
+
+Úloha zahrnovala nalezení cíle, který se pohyboval po stanu v závislosti na značce v místnosti nebo v závislosti na Vaší startovní pozici. Pozice těchto cílů za obou podmínek je znázorněna na obrázku.
+
+Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle značky na stěně:
+```{r, echo = FALSE}
+i_allo = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Allo")
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_allo))
+```
+
+### Hledání cílů podle startovní pozice
+
+Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle startovní pozice
+```{r, echo = FALSE}
+i_ego = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Ego")
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_ego))
+
+new_df = df[df$type == "Ego", ]
+
+time = mean(new_df$duration)
+time = round(time, 2)
+
+distance = mean(new_df$distances.walkedDistance)
+min_distance = mean(new_df$distances.goalStart)
+longer = (distance - min_distance)/10 #as the area is approx 10 times smaller
+```
+
+Váš průměrný čas pro tento typ úloh byl `r time` vteřin. Průměrná vzdálenost do cíle byla o `r longer` metrů delší, než minimální vzdálenost pr daný úkol.
+
+### Hledání cílů podle značek
+
+Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle značky
+```{r, echo = FALSE}
+i_allo = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Allo")
+make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_allo))
+
+new_df = df[df$type == "Allo", ]
+
+time = mean(new_df$duration)
+time = round(time, 2)
+
+distance = mean(new_df$distances.walkedDistance)
+min_distance = mean(new_df$distances.goalStart)
+longer = (distance - min_distance)/10 #as the area is approx 10 times smaller
+```
+
+Váš průměrný čas pro tento typ úloh byl `r time` vteřin. Průměrná vzdálenost do cíle byla o `r longer` metrů delší, než minimální vzdálenost pr daný úkol.
+
+
+## Modrý stan
