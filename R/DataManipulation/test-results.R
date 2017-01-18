@@ -9,7 +9,7 @@ test_results = function(test, dt_player){
                   index = rep(NA, n_finished_trials), 
                   stringsAsFactors=FALSE)    
   for (n in i_finished_trials){
-    ls = get_trial_info(test, n, dt_player)
+    ls = trial_info(test, n, dt_player)
     ls$index = n
     df[n, ] = unlist(ls, recursive = F)
   }

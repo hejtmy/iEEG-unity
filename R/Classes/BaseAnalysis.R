@@ -16,8 +16,8 @@ BaseAnalysis <- R6Class("BaseAnalysis",
   SetParticipant = function(string){
     self$participant = string
   },
-  ReadData = function(){
-    private$readData()
+  ReadData = function(override = F){
+    private$readData(override)
   }
   ),
   private = list(

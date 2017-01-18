@@ -7,18 +7,18 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     session = NULL,
     sessionDirectory = NULL,
     playerLog = NULL,
-    initialize = function(dir, id, session=NULL){
+    initialize = function(dir, id, session = NULL, override = F){
       self$SetParticipant(id)
       private$setDataDirectory(dir)
       self$SetSession(session)
       #TODO - check the data
       if(nargs() >= 2) {
-        self$ReadData()
+        self$ReadData(override)
       }
     },
     #define what is valid in the current context
     SetSession = function(session){
-      self$session = if(is.null(session)) NULL else paste("Session",session,sep="")
+      self$session = if(is.null(session)) NULL else paste("Session", session, sep="")
       return(private$setSessionDirectory())
     },
     DrawTrialImage = function(trialID){
@@ -29,7 +29,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     TrialInfo = function(trialID){
       ls = list()
       test = self$tests[[1]]
-      ls = get_trial_info(test, trialID, self$playerLog)
+      ls = trial_info(test, trialID, self$playerLog)
       
       return(ls)
     },
@@ -39,6 +39,9 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       test = self$tests[[1]]
       df_test = test_results(test, self$playerLog)
       return(df_test)
+    },
+    ExportSynchropulses = function(i_test = 1, name = "ArduinoPulseStart"){
+      export_pulses(self$tests[[i]]$data, name)
     }
   ),
   private = list(
@@ -49,26 +52,26 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     },
     setSessionDirectory = function(){
       if(is.null(self$dataDirectory)) private$setDataDirectory()
-      self$sessionDirectory = paste(self$dataDirectory,self$session,sep="/")
+      self$sessionDirectory = paste(self$dataDirectory, self$session, sep = "/")
       return(self$sessionDirectory)
     },
     readData = function(override = F, save = T){
       #checks for path
       if (is.null(self$sessionDirectory)) stop("no session directory set")
       #open experiment_logs to see how many do we have
-      experimentLog = OpenExperimentLogs(self$sessionDirectory)
+      experimentLog = open_experiment_logs(self$sessionDirectory)
       
       if(is.null(experimentLog)) stop("Experiment log not found")
-      #if multiple logs, quit
-      self$playerLog = OpenPlayerLog(self$sessionDirectory, override = override)
+      #if multiple logs or no logs, quit
       
+      self$playerLog = open_player_log(self$sessionDirectory, override = override)
       if(is.null(self$playerLog)) stop("Player log not found")
       #preprocesses player log
       #checks if there is everything we need and if not, recomputes the stuff
       changed = private$preprocessPlayerLog()
-      if (changed & save) SavePreprocessedPlayer(self$sessionDirectory,self$playerLog)
+      if (changed & save) save_preprocessed_player(self$sessionDirectory, self$playerLog)
         
-      testLogs = OpenTestLogs(self$sessionDirectory)
+      testLogs = open_test_logs(self$sessionDirectory)
       for (i in length(testLogs)){
         self$tests[[i]] = testLogs[[i]]
       }
@@ -83,16 +86,9 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     preprocessPlayerLog = function(){
       #check_stuff
       #check columns
-      changed = F
-      if (!ColumnPresent(colnames(self$playerLog),"Position.x")){
-        self$playerLog = vector3_to_columns(self$playerLog,"Position")
-        changed = T
-      }
-      if (!ColumnPresent(colnames(self$playerLog),"cumulative_distance")){
-        self$playerLog = AddDistanceWalked (self$playerLog)
-        changed = T
-      } 
-      if (changed) print("Log modified") else print("Log ok")
+      
+      #this should work as data.tables are passed by reference
+      changed = preprocess_player_log(self$playerLog)
       return(changed)
     }
   )

@@ -19,3 +19,5 @@ vignettes/*.pdf
 .httr-oauth
 .Rproj.user
 *.html
+.RDataTmp
+*.events
