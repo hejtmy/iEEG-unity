@@ -1,9 +1,9 @@
-svg_add_arena %<c-% function(SIZE, plot, test, ...){
-  center = (SIZE + test$experimentSettings$MarkRadius)/2
+svg_add_arena %<c-% function(test, ...){
   attrs = list(...)
+  print(attrs)
   g(
-    attrs,
     id = "arena",
-    circle(cxy = center, r = test$experimentSettings$MarkRadius, fill = 'none', stroke = "black")
+    attrs,
+    circle(cxy = c(0,0), r = test$experimentSettings$MarkRadius, fill = 'none', stroke = "black")
   )
 }

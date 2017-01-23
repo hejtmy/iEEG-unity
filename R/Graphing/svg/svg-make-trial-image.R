@@ -1,14 +1,16 @@
 library(svgR)
 svg_make_trial_image = function (dt_position, test, trialID){
   svg_image = NULL
-  SIZE = c(180, 180)
-  transform = list(translate = c(0, 10), scale = c(1, 1))
+  SIZE = c(200, 200)
+  transform = list(translate = c(25, 25), scale = c(1, 1))
   svgR(wh = SIZE,
-    svg(id = "elements",
-      svg_add_arena(SIZE, plot, test, transform),
-      svg_add_goal(SIZE, plot, test, trialID, transform)
-      ),
-    svg(use(xlink.href = paste0("#", "elements")))
+       g(
+         transform = list(translate = c(SIZE/2), scale = c(3, 3)),
+         svg_add_arena(test),
+         svg_add_goal(test, trialID),
+         svg_add_mark(test, trialID),
+         svg_add_player_path(test, trialID, dt_position)
+       )
   )
   
   #draws start point
