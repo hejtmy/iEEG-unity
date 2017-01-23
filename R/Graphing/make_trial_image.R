@@ -1,4 +1,4 @@
-make_trial_image = function (dt_position, test, trialID, special_paths = NULL, special_points = NULL){
+make_trial_image = function (dt_position, test, trialID){
   plot = ggplot() + theme_void()
   
   #draws round arena
