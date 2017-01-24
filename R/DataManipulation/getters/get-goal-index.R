@@ -1,5 +1,5 @@
 get_goal_index = function(test, trialID){
-  if(get_trial_type(test, trialID)=="Allo"){
+  if(get_trial_type(test, trialID) == "Allo"){
     uncorrectedIndex = test$experimentSettings$MarkOrder[trialID] + test$experimentSettings$AlloMarkRelation + 1 
   } else {
     uncorrectedIndex = test$experimentSettings$StartOrder[trialID] + test$experimentSettings$EgoMarkRelation + 1 
