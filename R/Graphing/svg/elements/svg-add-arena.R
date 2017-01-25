@@ -1,6 +1,5 @@
 svg_add_arena %<c-% function(test, ...){
   attrs = list(...)
-  print(attrs)
   g(
     id = "arena",
     attrs,

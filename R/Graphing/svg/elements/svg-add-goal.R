@@ -2,6 +2,8 @@ svg_add_goal %<c-% function(test, trialID, ...){
   attrs = list(...)
   i_goal = get_goal_index(test, trialID)
   goal_pos = get_goal_position(test, i_goal, onlyXY = T)
+  #SVG has Y reversed so
+  goal_pos = reverse_y(goal_pos)
   g(id = "goal",
     attrs,
     #precise dot
