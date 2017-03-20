@@ -41,7 +41,7 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       return(df_test)
     },
     ExportSynchropulses = function(i_test = 1, name = "ArduinoPulseStart"){
-      export_pulses(self$tests[[i]]$data, name)
+      export_pulses(self$tests[[i_test]]$data, name)
     }
   ),
   private = list(
