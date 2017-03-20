@@ -3,7 +3,7 @@
 #' @param playerLog: data table log as preprocessed by the Analysis fuynction
 #' @path path: path to the file. Defaults to workign directory
 #'
-export_player_log = function(playerLog, path){
+export_player_log = function(playerLog, path = getwd()){
   playerLog[, Position := NULL]
   filePath = paste(path, "playerLog.log", sep = "/", collapse = "")
   colnames(playerLog) = c("Time", "RotationX", "RotationY", "FPS", "Input", "PositionX", 
