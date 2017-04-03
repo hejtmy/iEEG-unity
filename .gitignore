@@ -21,3 +21,5 @@ vignettes/*.pdf
 *.html
 .RDataTmp
 *.events
+
+*.log
