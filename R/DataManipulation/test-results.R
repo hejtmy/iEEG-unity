@@ -5,6 +5,9 @@ test_results = function(test, dt_player){
   df = data.frame(duration = rep(NA, n_finished_trials), 
                   distances.walkedDistance = rep(NA, n_finished_trials), 
                   distances.goalStart = rep(NA, n_finished_trials), 
+                  point.time = rep(NA, n_finished_trials),
+                  point.chosen = rep(NA, n_finished_trials),
+                  point.target = rep(NA, n_finished_trials),
                   type = rep("", n_finished_trials),
                   index = rep(NA, n_finished_trials), 
                   stringsAsFactors=FALSE)    
