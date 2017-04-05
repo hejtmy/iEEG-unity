@@ -5,6 +5,7 @@ data_dir = "../Data"
 
 Analysis = UnityAnalysis$new(data_dir, "ek0117")
 Analysis$TestResults()
+Analysis$TrialInfo(10)
 
 make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(2:3))
 
