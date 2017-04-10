@@ -7,7 +7,7 @@ css: "Style/markdown5.css"
 ---
 
 ```{r, echo = FALSE, warning = F, error = FALSE, message = F, results = 'hide'}
-code = "P108"
+code = "P142"
 setwd("../")
 data_dir = "../Data/"
 source("R/Loading.R")
@@ -23,13 +23,7 @@ Během svého pobytu v Nemocnici v Motole jste se zúčastnil/a experimentů ved
 # Virtuální experiment
 V jednom z experimentů jste absolvoval/a řešení navigačních úloh na počítači. Tyto úlohy zahrnovaly pohyb po simulaci stanu úmístěného v Nemocnici motol a hledání značek ukrytých na zemi. Níže můžete nalézt nákres s popisky tohoto stanu pro připomenutí.
 
-Úloha zahrnovala nalezení cíle, který se pohyboval po stanu v závislosti na značce v místnosti nebo v závislosti na Vaší startovní pozici. Pozice těchto cílů za obou podmínek je znázorněna na obrázku.
-
-Zde jsou nakreslené Vaše trasy pro úlohy, kdy jste měl hledat cíl podle značky na stěně:
-```{r, echo = FALSE}
-i_allo = which(Analysis$tests[[1]]$experimentSettings$RandomOrdering == "Allo")
-make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_allo))
-```
+Úloha zahrnovala nalezení cíle, který se pohyboval po stanu v závislosti na značce v místnosti nebo v závislosti na Vaší startovní pozici.
 
 ### Hledání cílů podle startovní pozice
 
@@ -40,12 +34,12 @@ make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_ego))
 
 new_df = df[df$type == "Ego", ]
 
-time = mean(new_df$duration)
-time = round(time, 2)
+ego_time = mean(new_df$duration)
+time = round(ego_time, 2)
 
-distance = mean(new_df$distances.walkedDistance)
+ego_distance = mean(new_df$distances.walkedDistance)
 min_distance = mean(new_df$distances.goalStart)
-longer = (distance - min_distance)/10 #as the area is approx 10 times smaller
+longer = round((ego_distance - min_distance)/10, 2) #as the area is approx 10 times smaller
 ```
 
 Váš průměrný čas pro tento typ úloh byl `r time` vteřin. Průměrná vzdálenost do cíle byla o `r longer` metrů delší, než minimální vzdálenost pr daný úkol.
@@ -59,15 +53,24 @@ make_trial_images(Analysis$playerLog, Analysis$tests[[1]], indices = c(i_allo))
 
 new_df = df[df$type == "Allo", ]
 
-time = mean(new_df$duration)
-time = round(time, 2)
+allo_time = mean(new_df$duration)
+time = round(allo_time, 2)
 
-distance = mean(new_df$distances.walkedDistance)
+allo_distance = mean(new_df$distances.walkedDistance)
 min_distance = mean(new_df$distances.goalStart)
-longer = (distance - min_distance)/10 #as the area is approx 10 times smaller
+longer = round((allo_distance - min_distance)/10, 2) #as the area is approx 10 times smaller
 ```
 
-Váš průměrný čas pro tento typ úloh byl `r time` vteřin. Průměrná vzdálenost do cíle byla o `r longer` metrů delší, než minimální vzdálenost pr daný úkol.
+Váš průměrný čas pro tento typ úloh byl `r time` vteřin. Průměrná vzdálenost do cíle byla o `r longer` metrů delší, než minimální vzdálenost pro daný úkol.
 
+## Zajímavé údaje
 
-## Modrý stan
+Celkově Vám šlo lépe hledání `r if(allo_distance > ego_distance){"podle startu"} else {"podle značky"}`. 
+
+```{r, echo = FALSE}
+mean_dist <- df %>% group_by(type) %>% summarise(mean = mean(distances.walkedDistance - distances.goalStart), sd = sd(distances.walkedDistance - distances.goalStart))
+mean_dist$type <- replace_strings(mean_dist$type, c('Allo', 'Ego'), c('Podle značky', 'Podle startu'))
+ggplot(mean_dist, aes(type, mean, fill = type)) + geom_bar(stat = "identity") + 
+  xlab("Typ úlohy") + ylab("Průměrná vzdálenost") + theme(legend.position = 'none')
+
+```
