@@ -4,6 +4,6 @@ add_goal = function(plot, test, trialID){
   goal_area = make_circle(GoalPosition(test, i_goal, onlyXY = T), test$experimentSettings$GoalSize, precision = 100)
   #draws goal
   plot = plot +
-    geom_point(data = goal_pos, aes(Position.x, Position.z), size = 5, color = "red") +
+    geom_point(data = goal_pos, aes(Position.x, Position.z), size = 3, color = "red") +
     geom_path(data = goal_area, aes(x, y), color = "red")
 }
