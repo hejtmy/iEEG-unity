@@ -30,7 +30,6 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       ls = list()
       test = self$tests[[1]]
       ls = trial_info(test, trialID, self$playerLog)
-      
       return(ls)
     },
     TestResults = function(force = F){
@@ -40,17 +39,11 @@ UnityAnalysis <- R6Class("UnityAnalysis",
       df_test = test_results(test, self$playerLog)
       return(df_test)
     },
-    CollectSynchropulses = function(i_test = 1, name = "ArduinoPulseStart"){
-      
-    },
-    CollectEvents = function(i_test = 1){
-      
-    },
     ExportSynchropulses = function(i_test = 1, event_name = "ArduinoPulseStart"){
       export_pulses(self$tests[[i_test]]$data, event_name, id = self$participant)
     },
     ExportPlayerLog = function(path = getwd()){
-      export_player_log(self$playerLog, path = path)
+      export_player_log(self$playerLog, self$participant, path = path)
     },
     ExportEvents = function(i_test = 1){
       df = collect_events(self$tests[[i_test]], self$playerLog)
