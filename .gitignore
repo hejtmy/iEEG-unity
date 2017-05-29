@@ -23,3 +23,5 @@ vignettes/*.pdf
 *.events
 
 *.log
+
+*.pulses
