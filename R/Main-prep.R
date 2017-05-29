@@ -8,3 +8,4 @@ Analysis$TestResults()
 
 Analysis$ExportSynchropulses()
 Analysis$ExportPlayerLog()
+Analysis$ExportEvents()

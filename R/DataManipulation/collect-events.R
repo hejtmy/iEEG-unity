@@ -10,11 +10,13 @@ collect_events <- function(test, dt_player){
   trialEnded <- test$data %>% filter(Sender == "Trial") %>% filter(Event == "Finished") %>% .$Time
   pointingStarted <- trialStarted
   pointingEnded <- c()
+  pointingError <- c()
   type <- c()
   for(trialID in trialIDs){
     pointing <- get_trial_pointing(dt_player, test, trialID)
     pointingEnded <- c(pointingEnded, pointing$time)
+    pointingError <- c(pointingError, angle_difference(pointing$target, pointing$chosen))
     type <- c(type, get_trial_type(test, trialID))
   }
-  df = data.frame(trialIDs, trialSetup, trialStarted, trialEnded, pointingStarted, pointingEnded, type)
+  df = data.frame(trialIDs, trialSetup, trialStarted, trialEnded, pointingStarted, pointingEnded, pointingError, type)
 }

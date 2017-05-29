@@ -52,8 +52,10 @@ UnityAnalysis <- R6Class("UnityAnalysis",
     ExportPlayerLog = function(path = getwd()){
       export_player_log(self$playerLog, path = path)
     },
-    ExportEvents = function(){
-      export_events(self$tests[[i_test]]$data)
+    ExportEvents = function(i_test = 1){
+      df = collect_events(self$tests[[i_test]], self$playerLog)
+      filePath = paste(getwd(), "/", self$participant, ".events", sep = "")
+      write.table(df, filePath, sep = ";", quote = F, row.names = F)
     }
   ),
   private = list(
