@@ -12,7 +12,7 @@ collect_events <- function(test, dt_player){
   trialSetup <- finishedTrials %>% filter(Sender == "Trial") %>% filter(Event == "WaitingToStart") %>% .$Time
   trialStarted <- finishedTrials %>% filter(Sender == "Trial") %>% filter(Event == "Running") %>% .$Time
   #I had a mistake in the old logs with running spelled with only a single N
-  if (is.null(trialStarted)) trialStarted <- finishedTrials %>% filter(Sender == "Trial") %>% filter(Event == "Runing") %>% .$Time
+  if (length(trialStarted) == 0) trialStarted <- finishedTrials %>% filter(Sender == "Trial") %>% filter(Event == "Runing") %>% .$Time
   trialEnded <- finishedTrials %>% filter(Sender == "Trial") %>% filter(Event == "Finished") %>% .$Time
   pointingStarted <- trialStarted
   pointingEnded <- c()
