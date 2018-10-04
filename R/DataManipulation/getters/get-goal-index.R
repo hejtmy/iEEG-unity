@@ -1,8 +1,9 @@
-get_goal_index = function(test, trialID){
-  if(get_trial_type(test, trialID) == "Allo"){
-    uncorrectedIndex = test$experimentSettings$MarkOrder[trialID] + test$experimentSettings$AlloMarkRelation + 1 
+get_goal_index <- function(obj, trialID){
+  exp_settings <- get_experiment_settings(obj)
+  if(get_trial_type(obj, trialID) == "Allo"){
+    uncorrectedIndex <- exp_settings$MarkOrder[trialID] + exp_settings$AlloMarkRelation + 1 
   } else {
-    uncorrectedIndex = test$experimentSettings$StartOrder[trialID] + test$experimentSettings$EgoMarkRelation + 1 
+    uncorrectedIndex <- exp_settings$StartOrder[trialID] + exp_settings$EgoMarkRelation + 1 
   }
-  if(uncorrectedIndex>test$experimentSettings$NumberOfGoals) return(uncorrectedIndex-test$experimentSettings$NumberOfGoals) else return(uncorrectedIndex)
+  if(uncorrectedIndex > exp_settings$NumberOfGoals) return(uncorrectedIndex - exp_settings$NumberOfGoals) else return(uncorrectedIndex)
 }
