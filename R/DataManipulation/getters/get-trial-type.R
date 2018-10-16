@@ -1,3 +1,3 @@
-get_trial_type = function(test, trialID){
-  return(test$experimentSettings$RandomOrdering[trialID])
+get_trial_type <- function(obj, trialId){
+  return(get_experiment_settings(obj)$RandomOrdering[trialId])
 }

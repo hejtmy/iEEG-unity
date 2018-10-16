@@ -1,3 +1,3 @@
-get_start_index = function(test, trialID){
-  return(test$experimentSettings$StartOrder[trialID] + 1)
+get_start_index <- function(obj, trialID){
+  return(get_experiment_settings(obj)$StartOrder[trialID] + 1)
 }
