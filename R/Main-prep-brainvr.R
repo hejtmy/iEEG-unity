@@ -16,5 +16,3 @@ export_pulses(obj, event_names = c("ArduinoPulseStart", "ArduinoPulseStop"), PAR
 export_player_log(obj, PARTICIPANT_CODE)
 
 export_events(obj, PARTICIPANT_CODE)
-
-MakeTrialImage(self$playerLog, self$tests[[1]], trialID)
